@@ -30,6 +30,10 @@ public class ControllerBase {
 	
 	public ControllerBase() {}
 	
+	private Map<String, String> errorMsg = new HashMap<String, String>(){{
+		put("def_action", "缺失控制器动作");
+	}};
+	
 	public void init(RequestInfo res, ResponseInfo resq, String todo){
 		
 		this.out = resq.writer;
@@ -56,7 +60,15 @@ public class ControllerBase {
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
-				e.printStackTrace();
+				try {
+					this.error( new String[] {
+						"asdasda",
+						"<br>请查看 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller." + _GET.get("a") + "() 方法是否存在"
+					});
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		}
 	}
@@ -127,7 +139,7 @@ public class ControllerBase {
 				}////这个就是属性的值
 	        }
 	        
-			this.out.print(str+111);
+			this.out.print(str);
 			this.out.flush();
 			this.out.close();
 			

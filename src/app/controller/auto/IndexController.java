@@ -6,11 +6,18 @@ import com.sys.core.controller.ControllerBase;
 
 
 public class IndexController extends ControllerBase {
-	public String test = "测试模板引擎";
-	public String test123 = "测试模板引擎123";
+	
+	public String title = "一个测试页面";
+	
+	public String str = "极致简约! 开发由我";
 
 	public void index() {
 //		T.N();
 		this.display();
+	}
+	
+	public void test() {
+//		T.N();
+		this.out.write("ajax 返回");
 	}
 }
