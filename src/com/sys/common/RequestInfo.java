@@ -82,6 +82,18 @@ public class RequestInfo {
 		}
 	}
 
+	public String _setCoreQueryString(String key, String value) {
+		
+		if ( key.equals("c") || key.equals("a") || key.equals("p") ) {
+			
+			this.get.put(key, value);
+			return value;
+		} else {
+			
+			return null;
+		}
+	}
+
 	public String _POST(String key) {
 		
 		if ( this.post.containsKey(key) ) {

@@ -34,20 +34,12 @@ public final class Router {
 		this.cb = new ControllerBase();
 		this.cb.init(res, resq, null);
 		
-		this.controller = Str.is_invalid(res._GET("c")) ? this.defaultController : res._GET("c");
-		this.action = Str.is_invalid(res._GET("a")) ? this.defaultAction : res._GET("a");
-		this.pack = Str.is_invalid(res._GET("p")) ? this.defaultPack : res._GET("p");
-		
+		this.controller = Str.is_invalid(res._GET("c")) ? res._setCoreQueryString("c", this.defaultController) : res._GET("c");
+		this.action = Str.is_invalid(res._GET("a")) ? res._setCoreQueryString("a", this.defaultAction) : res._GET("a");
+		this.pack = Str.is_invalid(res._GET("p")) ? res._setCoreQueryString("p", this.defaultPack) : res._GET("p");
 		
 		if ( Str.is_invalid(this.controller) || Str.is_invalid(this.action) || Str.is_invalid(this.pack) ) {
-			
-			/*try {
-				//new ControllerBase(this, out).error( new String[] {"../webapps/forfreej/error.html"} );
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}*/
-
+						
 		} else {
 			try {
 				Class<?> ctrl = Class.forName("app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller"); //获取控制器
