@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -17,7 +16,7 @@ import java.util.regex.Pattern;
 import com.sys.common.RequestInfo;
 import com.sys.common.ResponseInfo;
 import com.sys.tools.Str;
-
+@SuppressWarnings("serial")
 public class ControllerBase {
 	
 	public String projectName = null;
@@ -30,6 +29,7 @@ public class ControllerBase {
 	
 	public ControllerBase() {}
 	
+	@SuppressWarnings("unused")
 	private Map<String, String> errorMsg = new HashMap<String, String>(){{
 		put("def_action", "缺失控制器动作");
 	}};
@@ -122,8 +122,8 @@ public class ControllerBase {
 	        } 
 	        for (String s : strs){
 	            try {
+	            	
 	            	str = str.replaceAll("\\{\\$" + s + "\\}", (String) cls.getField(s).get(this));
-					;
 				} catch (SecurityException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

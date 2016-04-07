@@ -34,52 +34,54 @@ public final class Router {
 		this.cb = new ControllerBase();
 		this.cb.init(res, resq, null);
 		
-		this.controller = Str.is_invalid(res._GET("c")) ? res._setCoreQueryString("c", this.defaultController) : res._GET("c");
-		this.action = Str.is_invalid(res._GET("a")) ? res._setCoreQueryString("a", this.defaultAction) : res._GET("a");
-		this.pack = Str.is_invalid(res._GET("p")) ? res._setCoreQueryString("p", this.defaultPack) : res._GET("p");
+		this.controller = Str.is_invalid(res._GET("c")) ? 
+				res._setCoreQueryString("c", this.defaultController) : res._GET("c");
 		
-		if ( Str.is_invalid(this.controller) || Str.is_invalid(this.action) || Str.is_invalid(this.pack) ) {
-						
-		} else {
+		this.action = Str.is_invalid(res._GET("a")) ? 
+				res._setCoreQueryString("a", this.defaultAction) : res._GET("a");
+		
+		this.pack = Str.is_invalid(res._GET("p")) ? 
+				res._setCoreQueryString("p", this.defaultPack) : res._GET("p");
+		
+		try {
+			Class<?> ctrl = Class.forName("app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller"); //获取控制器
+			
+			ctrl.getMethod("init", RequestInfo.class, ResponseInfo.class, String.class).invoke(ctrl.newInstance(), res, resq, this.action);
+			
+		} catch (NoSuchMethodException e) {
 			try {
-				Class<?> ctrl = Class.forName("app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller"); //获取控制器
-				
-				ctrl.getMethod("init", RequestInfo.class, ResponseInfo.class, String.class).invoke(ctrl.newInstance(), res, resq, this.action);
-				
-			} catch (NoSuchMethodException e) {
-				try {
-					this.cb.error( new String[] {"../webapps/forfreej/error.html"} );
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				//反射的方法不存在
-				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				try {
-					this.cb.error( new String[] {
-						"asdasda",
-						"<br>请查看app.controller." + pack + "." + Str.toUpper(this.controller, 0) + "Controller是否存在"
-					});
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-				//反射的类不存在
-			} catch (InstantiationException e) {
-
-				e.printStackTrace();
-			} catch (IllegalAccessException e) {
-
-				e.printStackTrace();
-			} catch (IllegalArgumentException e) {
-
-				e.printStackTrace();
-			} catch (InvocationTargetException e) {
-
-				e.printStackTrace();
+				this.cb.error( new String[] {""} );
+			} catch (IOException e1) {
+				//文件不存在
+				e1.printStackTrace();
 			}
+			//反射的方法不存在
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			try {
+				this.cb.error( new String[] {
+					"asdasda",
+					"请查看app.controller." + pack + "." + Str.toUpper(this.controller, 0) + "Controller是否存在"
+				});
+			} catch (IOException e1) {
+				//文件不存在
+				e1.printStackTrace();
+			}
+			//反射的类不存在
+		} catch (InstantiationException e) {
+
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+
+			e.printStackTrace();
 		}
+		
 	}
 
 	public String getDefaultController() {

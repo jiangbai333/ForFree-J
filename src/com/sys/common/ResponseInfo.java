@@ -15,8 +15,6 @@ public class ResponseInfo {
 	public ResponseInfo(HttpServletResponse response) {
 		
 		this.response = response;
-		
-		
 		this.init();
 	}
 	
