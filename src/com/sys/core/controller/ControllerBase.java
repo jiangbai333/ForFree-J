@@ -150,4 +150,12 @@ public class ControllerBase {
 			e.printStackTrace();
 		}
 	}
+	
+	public void write() {
+
+		this.out.print("缺少错误信息描述文件，这不是并不是一个严重错误，当你控制器以及控制器动作正确时，不会影响应用的正常运行");
+		this.out.flush();
+		this.out.close();
+	}
+	
 }

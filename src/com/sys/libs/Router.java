@@ -60,7 +60,6 @@ public final class Router {
 		} catch (ClassNotFoundException e) {
 			try {
 				this.cb.error( new String[] {
-					"asdasda",
 					"请查看app.controller." + pack + "." + Str.toUpper(this.controller, 0) + "Controller是否存在"
 				});
 			} catch (IOException e1) {
@@ -82,29 +81,5 @@ public final class Router {
 			e.printStackTrace();
 		}
 		
-	}
-
-	public String getDefaultController() {
-		return defaultController;
-	}
-
-	public String getDefaultAction() {
-		return defaultAction;
-	}
-
-	public String getDefaultPack() {
-		return defaultPack;
-	}
-
-	public String getController() {
-		return controller;
-	}
-
-	public String getAction() {
-		return action;
-	}
-
-	public String getPack() {
-		return pack;
 	}
 } 

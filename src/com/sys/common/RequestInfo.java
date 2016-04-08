@@ -104,7 +104,7 @@ public class RequestInfo {
 	}
 
 	/**
-	 * 可以选择性的天加c、a、v, 为了防止get属性中, 缺少c、a、v, 或实现更复杂的控制器映射
+	 * 可以选择性的添加c、a、v, 为了防止get属性中, 缺少c、a、v, 或实现更复杂的控制器映射
 	 * @param String key c|a|v
 	 * @param String value 
 	 * @return
