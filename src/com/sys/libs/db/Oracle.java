@@ -1,7 +1,7 @@
 package com.sys.libs.db;
 
-import com.sys.libs.db.base.Db;
+import com.sys.libs.db.base.DbBase;
 
-public class Oracle implements Db{
+public class Oracle extends DbBase{
 	
 }

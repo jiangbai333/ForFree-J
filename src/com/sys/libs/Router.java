@@ -56,7 +56,6 @@ public final class Router {
 				e1.printStackTrace();
 			}
 			//反射的方法不存在
-			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			try {
 				this.cb.error( new String[] {
@@ -64,16 +63,12 @@ public final class Router {
 				});
 			} catch (IOException e1) {
 				//文件不存在
-				e1.printStackTrace();
 			}
 			//反射的类不存在
 		} catch (InstantiationException e) {
 
 			e.printStackTrace();
 		} catch (IllegalAccessException e) {
-
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
 
 			e.printStackTrace();
 		} catch (InvocationTargetException e) {
