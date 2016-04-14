@@ -8,7 +8,7 @@ public interface Db {
 	
 	public Db field(List<String> field);
 		
-	public Db table();
+	public Db table(String table);
 	
-	public Db where();
+	public Db where(String where);
 }
