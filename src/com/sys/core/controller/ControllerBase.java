@@ -10,14 +10,13 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.App;
 import com.sys.common.RequestInfo;
 import com.sys.common.ResponseInfo;
 import com.sys.libs.Template;
 import com.sys.tools.Str;
 @SuppressWarnings("serial")
 public class ControllerBase {
-	
-	public String projectName = null;
 	
 	public PrintWriter out = null;
 	
@@ -35,8 +34,6 @@ public class ControllerBase {
 	public void init(RequestInfo res, ResponseInfo resq, String todo){
 		
 		this.out = resq.writer;
-		
-		this.projectName = res.projectName;
 		
 		this._GET = res.getGet();
 		this._POST = res.getPost();
@@ -69,7 +66,7 @@ public class ControllerBase {
 		BufferedReader ready;
 		
 		try {
-			ready = new BufferedReader(new InputStreamReader(new FileInputStream(new File("../webapps/" + this.projectName + "/error.html")), "UTF-8"));
+			ready = new BufferedReader(new InputStreamReader(new FileInputStream(new File("../webapps/" + App.info.get("projectName") + "/error.html")), "UTF-8"));
 			String	temp = "",
 					sendOut = "",
 					tempStr = "";
@@ -95,7 +92,7 @@ public class ControllerBase {
 	
 	public void display(){
 		
-		String file = "../webapps/" + this.projectName + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
+		String file = "../webapps/" + App.info.get("projectName") + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
 
 		this.out.print(new Template().compile(file, this));
 		this.out.flush();

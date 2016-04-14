@@ -10,14 +10,15 @@ import java.util.Properties;
 
 public class Proper {
 	
+	private Map<String, String> properties = new HashMap<String, String>();
+	
 	@SuppressWarnings("unchecked")
-	public Proper(Map<String, String> properties) {
-		Map<String, String> tempMap = new HashMap<String, String>();
+	public Proper(String prop) {
 		
 		Properties pro = new Properties();
 		
 		try {
-			pro.load(new FileInputStream(""));
+			pro.load(new FileInputStream(prop));
 			
 		    Enumeration enum1 = pro.propertyNames();//得到配置文件的名字
 		    
@@ -26,7 +27,7 @@ public class Proper {
 		        String key = (String) enum1.nextElement();
 		        String value = pro.getProperty(key);
 		        
-		        tempMap.put(key, value);
+		        this.properties.put(key, value);
 			}
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -35,5 +36,9 @@ public class Proper {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	public Map<String, String> getProperties() {
+		return properties;
 	}
 }

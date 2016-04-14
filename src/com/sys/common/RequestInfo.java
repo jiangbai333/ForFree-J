@@ -12,9 +12,6 @@ public class RequestInfo {
 	
 	public HttpServletRequest request = null;
 	
-	/** 项目名称 */
-	public String projectName = null;
-	
 	/** 请求体中通过 POST 方式传递的参数 */
 	private Map<String, String> post = new HashMap<String, String>();
 	
@@ -79,7 +76,6 @@ public class RequestInfo {
 	@SuppressWarnings("unchecked")
 	private void analysisRequestHead() {
 
-    	this.projectName = request.getContextPath().substring(1);
 	}
 
 	public Map<String, String> getPost() {

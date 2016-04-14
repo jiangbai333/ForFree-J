@@ -1,6 +1,8 @@
 package com;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -13,6 +15,8 @@ import com.sys.libs.Router;
 
 @SuppressWarnings("serial")
 public final class App extends HttpServlet {
+	
+	public static Map<String, String> info = new HashMap<String, String>();
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 	        throws ServletException, IOException {
@@ -34,7 +38,10 @@ public final class App extends HttpServlet {
 		
 		/** 设置字符集编码 */
 		response.setContentType("text/html; charset=UTF-8");
-	
+	    
+		/** 项目名称 */
+		App.info.put("projectName", request.getContextPath().substring(1));
+		
 		/** 解析请求 */
 		( new Router() ).run(new RequestInfo(request), new ResponseInfo(response));
 			
