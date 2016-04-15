@@ -26,7 +26,7 @@ public class DbBase implements Db {
 	
 	protected String tableStr = "";
 	
-	protected String whereStr = "";
+	protected String whereStr = "1";
 	
 	protected String host = null;
 
@@ -127,7 +127,15 @@ public class DbBase implements Db {
 		return this.query();
 	}
 	
+	public List< Map<String, String> > query(String sql) {
+		return this.execute(sql);
+	}
+	
 	private List< Map<String, String> > query() {
+		return this.execute(this.sql);
+	}
+	
+	private List< Map<String, String> > execute(String sql) {
 		List< Map<String, String> > tempList = new ArrayList< Map<String, String> >();
 		
 		PreparedStatement pstmt;
@@ -149,7 +157,7 @@ public class DbBase implements Db {
 	    	e.printStackTrace();
 	    }
 		return tempList;
-	}	
+	}
 
 	private int GetRows() {
 		
