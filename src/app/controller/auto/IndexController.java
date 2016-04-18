@@ -5,6 +5,7 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 
+import com.App;
 import com.sys.core.controller.ControllerBase;
 import com.sys.libs.Proper;
 import com.sys.libs.db.Mysql;
@@ -29,9 +30,8 @@ public class IndexController extends ControllerBase {
 	
 	public void test() {
 //		T.N();
+		this.forward();
 		Mysql m = new Mysql(new Proper(F.P("mysql")).getProperties());
-		JSONArray json = JSONArray.fromObject(m.table("test").field("*").select());
-		this.str="test";
-		this.out.write(json.toString());
+		this.print_r(App.info);
 	}		
 }

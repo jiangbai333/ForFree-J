@@ -8,7 +8,16 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import com.App;
 import com.sys.common.RequestInfo;
@@ -19,6 +28,10 @@ import com.sys.tools.Str;
 public class ControllerBase {
 	
 	public PrintWriter out = null;
+	
+	public HttpServletRequest request = null;
+	
+	public HttpServletResponse response = null;
 	
 	public Map<String, String> _GET = new HashMap<String, String>();
 	
@@ -34,6 +47,8 @@ public class ControllerBase {
 	public void init(RequestInfo res, ResponseInfo resq, String todo){
 		
 		this.out = resq.writer;
+		this.request = res.request;
+		this.response = resq.response;
 		
 		this._GET = res.getGet();
 		this._POST = res.getPost();
@@ -98,17 +113,33 @@ public class ControllerBase {
 	
 	public void missingErrorViewFile() {
 
-		this.out.print("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns='http://www.w3.org/1999/xhtml'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /><title>文件缺失</title><style type='text/css'>*{ padding: 0; margin: 0; }body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; }.system-message{ padding: 24px 48px; }.system-message h1{ font-size: 100px; font-weight: normal; line-height: 120px; margin-bottom: 12px; }.system-message .jump{ padding-top: 10px}.system-message .jump a{ color: #333;}.system-message .success,.system-message .error{ line-height: 1.8em; font-size: 36px }.system-message .detail{ font-size: 12px; line-height: 20px; margin-top: 12px; display:none}</style></head><body><div class='system-message'><h1>T _ T</h1><p class='error'>缺失错误信息描述文件</p><p class='detail'></p><p class='jump'>forfreej 在试图输出错误信息时, 无法在 webroot 中找到错误信息描述文件</p><p class='jump'>请在 webroot 目录下建立错误描述文件, 并以 error.html 命名</p><p class='jump'>这不是一个严重错误, 只会影响到您的调试, 不会影响到应用的正常运行与使用</p></div></body></html>");
-		this.out.flush();
-		this.out.close();
+		this.echo("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns='http://www.w3.org/1999/xhtml'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /><title>文件缺失</title><style type='text/css'>*{ padding: 0; margin: 0; }body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; }.system-message{ padding: 24px 48px; }.system-message h1{ font-size: 100px; font-weight: normal; line-height: 120px; margin-bottom: 12px; }.system-message .jump{ padding-top: 10px}.system-message .jump a{ color: #333;}.system-message .success,.system-message .error{ line-height: 1.8em; font-size: 36px }.system-message .detail{ font-size: 12px; line-height: 20px; margin-top: 12px; display:none}</style></head><body><div class='system-message'><h1>T _ T</h1><p class='error'>缺失错误信息描述文件</p><p class='detail'></p><p class='jump'>forfreej 在试图输出错误信息时, 无法在 webroot 中找到错误信息描述文件</p><p class='jump'>请在 webroot 目录下建立错误描述文件, 并以 error.html 命名</p><p class='jump'>这不是一个严重错误, 只会影响到您的调试, 不会影响到应用的正常运行与使用</p></div></body></html>");
 	}
 	
-	public void print_r(String str) {
+	public void echo(String str) {
 		
+		this.out.print(str);
 	}
 	
-	public void print_r() {
+	@SuppressWarnings("unchecked")
+	public void print_r(Object temp) {
 		
+		this.out.print(JSONArray.fromObject(temp));
+	}
+	
+	//url请求转发
+	public void forward() {
+		//获取ServletContext对象
+		RequestDispatcher rd = App.context.getRequestDispatcher("/index?p=test");//获取请求转发对象(RequestDispatcher)
+		try {
+			rd.forward(request, response);
+		} catch (ServletException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}//调用forward方法实现请求转发
 	}
 	
 }
