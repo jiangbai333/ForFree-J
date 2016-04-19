@@ -108,6 +108,9 @@ public class ControllerBase {
 		}
 	}	
 	
+	/**
+	 * 渲染视图
+	 */
 	protected void display(){
 		
 		String file = this.info.get("path") + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
@@ -117,16 +120,29 @@ public class ControllerBase {
 		this.out.close();
 	}
 	
+	/**
+	 * 打印一个特定的字符串, 目前只为了调试程序使用
+	 * @param str 将要打印的字符串
+	 */
 	protected void echo(String str) {
 		
 		this.out.print(str);
 	}
 	
+	/**
+	 * 打印 json 串儿, 目前只为了调试程序使用
+	 * @param temp 将要打印的对象
+	 */
 	protected void print_r(Object temp) {
 		
 		this.out.print(JSONArray.fromObject(temp));
 	}
 	
+	/**
+	 * 打印 json 串儿并根据需要终止输出流, 目前只为了调试程序使用
+	 * @param temp 将要打印的对象
+	 * @param flag 是否终止输出流 true为终止输出流
+	 */
 	protected void print_r(Object temp, boolean flag) {
 		
 		this.out.print(JSONArray.fromObject(temp));
@@ -136,8 +152,13 @@ public class ControllerBase {
 			this.out.close();
 		}
 	}
-	
-	//url请求转发
+
+	/**
+	 * url请求转发
+	 * @param p 请求的包
+	 * @param c 请求的控制
+	 * @param a 请求的控制器动作
+	 */
 	protected void forward(String p, String c, String a) {
 		//获取ServletContext对象, 构建请求转发对象(RequestDispatcher)
 		RequestDispatcher rd = 
@@ -154,6 +175,11 @@ public class ControllerBase {
 		}//调用forward方法实现请求转发
 	}
 	
+	/**
+	 * 构造配置文件路径, 方便配置文件读取
+	 * @param 文件名
+	 * @return String 文件的绝对路径
+	 */
 	protected String P(String file) {
 		
 		return this.info.get("path") + "/WEB-INF/classes/" + file + ".properties";
