@@ -10,7 +10,7 @@ import com.sys.tools.Str;
 
 public class RequestInfo {
 	
-	public HttpServletRequest request = null;
+	private HttpServletRequest request = null;
 	
 	/** 请求体中通过 POST 方式传递的参数 */
 	private Map<String, String> post = new HashMap<String, String>();
@@ -23,9 +23,9 @@ public class RequestInfo {
 		
 		this.request = request;
 
-    	this.analysisPostParam(this.analysisGetParam());
+		this.analysisPostParam(this.analysisGetParam());
     	
-    	this.analysisRequestHead();
+		this.analysisRequestHead();
 	}
 	
 	/**
@@ -60,17 +60,17 @@ public class RequestInfo {
 		
 		Enumeration<?> pName = request.getParameterNames();
 		
-    	while(pName.hasMoreElements()){
+		while(pName.hasMoreElements()){
     		
-    		String param = (String) pName.nextElement();
+			String param = (String) pName.nextElement();
     		
-    		if ( !getParam.containsKey(param) ) {
+			if ( !getParam.containsKey(param) ) {
     			
-    			String key = param;
-    			String value = this.request.getParameterValues(param)[0];
-    			this.post.put(key, value);
-    		}
-    	}
+				String key = param;
+				String value = this.request.getParameterValues(param)[0];
+				this.post.put(key, value);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -126,5 +126,13 @@ public class RequestInfo {
 			
 			return null;
 		}
+	}
+
+	/**
+	 * 获取当前访问用户的 request 对象
+	 * @return HttpServletRequest
+	 */
+	public HttpServletRequest getRequest() {
+		return request;
 	}
 }

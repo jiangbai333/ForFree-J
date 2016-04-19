@@ -6,6 +6,7 @@
 <style type="text/css">
 *{ padding: 0; margin: 0; }
 body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; }
+b{color: maroon;position: relative;top: -2px;margin-right: 10px;}
 .system-message{ padding: 24px 48px; }
 .system-message h1{ font-size: 100px; font-weight: normal; line-height: 120px; margin-bottom: 12px; }
 .system-message .jump{ padding-top: 10px}
@@ -22,5 +23,13 @@ body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16p
 <!--页面自动 <a id="href" href="javascript:history.back(-1);">跳转</a> 等待时间： <b id="wait">3</b>
 [ <a href="aaa">返回首页</a> ]--></p>
 </div>
+<script>
+window.onload = function() {
+	var span = document.querySelectorAll("span");
+	for (var o in span) {
+		span[o].innerHTML = "<b>|</b>" + span[o].innerHTML;
+	}
+}
+</script>
 </body>
 </html>

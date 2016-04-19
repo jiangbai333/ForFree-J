@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.RequestDispatcher;
@@ -17,39 +16,49 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 
 import com.App;
 import com.sys.common.RequestInfo;
 import com.sys.common.ResponseInfo;
+import com.sys.common.StaticMassage;
 import com.sys.libs.Template;
 import com.sys.tools.Str;
+
 @SuppressWarnings("serial")
 public class ControllerBase {
 	
-	public PrintWriter out = null;
+	@SuppressWarnings("unchecked")
+	public Map info = new HashMap();
 	
-	public HttpServletRequest request = null;
+	private PrintWriter out = null;
 	
-	public HttpServletResponse response = null;
+	private HttpServletRequest request = null;
 	
-	public Map<String, String> _GET = new HashMap<String, String>();
+	private HttpServletResponse response = null;
 	
-	public Map<String, String> _POST = new HashMap<String, String>();
+	protected Map<String, String> _GET = new HashMap<String, String>();
+	
+	protected Map<String, String> _POST = new HashMap<String, String>();
 	
 	public ControllerBase() {}
 	
-	@SuppressWarnings("unused")
-	private Map<String, String> errorMsg = new HashMap<String, String>(){{
-		put("def_action", "缺失控制器动作");
-	}};
-	
+	@SuppressWarnings({ "unchecked", "deprecation" })
 	public void init(RequestInfo res, ResponseInfo resq, String todo){
+
+		this.out = resq.getWriter();
+		this.response = resq.getResponse();
+		this.request = res.getRequest();
 		
-		this.out = resq.writer;
-		this.request = res.request;
-		this.response = resq.response;
-		
+		this.info.put("url", request.getScheme() + 
+				"://" + request.getServerName() + 
+				":" + request.getServerPort() + 
+				request.getRequestURI() + 
+				"?" + request.getQueryString());
+		this.info.put("path", request.getRealPath(""));
+		this.info.put("contextPath", request.getContextPath());
+		this.info.put("localAddr", request.getLocalAddr());
+		this.info.put("getServerName", request.getServerName());
+				
 		this._GET = res.getGet();
 		this._POST = res.getPost();
 		
@@ -63,74 +72,77 @@ public class ControllerBase {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
-				// TODO Auto-generated catch block
-				try {
-					this.error( new String[] {
-						"asdasda",
-						"<br>请查看 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller." + _GET.get("a") + "() 方法是否存在"
-					});
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
+				this.error("MissingActoin", new String[] {
+					"请在 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller 中查看 " + _GET.get("a") + "()" + " 方法名是否书写正确",
+					"请查看 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller." + _GET.get("a") + "() 方法是否存在"
+				});
 			}
 		}
 	}
 	
-	public void error(String[] msg) throws IOException {
+	public void error(String type, String[] msg) {
 		BufferedReader ready;
 		
 		try {
-			ready = new BufferedReader(new InputStreamReader(new FileInputStream(new File("../webapps/" + App.info.get("projectName") + "/error.html")), "UTF-8"));
+			ready = new BufferedReader(new InputStreamReader(new FileInputStream(new File(this.info.get("path") + "/error.html")), "UTF-8"));
 			String	temp = "",
-					sendOut = "",
-					tempStr = "";
+					sendOut = "";
 			while(null != (temp = ready.readLine())){
 				sendOut += temp;
 			}
 
 			for ( String str : msg ) {
-				tempStr += ( str + "<br>" );
+				sendOut = sendOut.replaceAll("\\{\\$msg\\}", "<span class='msg'>" + str + "</span><br><br>\\{\\$msg\\}");
 			}
 			
-			this.out.print(sendOut.replaceAll("\\{\\$msg\\}", tempStr));
+			sendOut = sendOut.replaceAll("\\{\\$msg\\}", "");
+			sendOut = sendOut.replaceAll("\\{\\$errorType\\}", (String) StaticMassage.errorType.get(type));
+			this.out.print(sendOut);
 			this.out.flush();
 			this.out.close();
 			
 		} catch (IOException e) {
-			this.missingErrorViewFile();
+			this.out.print((String)StaticMassage.errorType.get("missingErrorViewFile"));
+			this.out.flush();
+			this.out.close();
 		}
 	}	
 	
-	public void display(){
+	protected void display(){
 		
-		String file = "../webapps/" + App.info.get("projectName") + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
+		String file = this.info.get("path") + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
 
 		this.out.print(new Template().compile(file, this));
 		this.out.flush();
 		this.out.close();
 	}
 	
-	public void missingErrorViewFile() {
-
-		this.echo("<!DOCTYPE html PUBLIC '-//W3C//DTD XHTML 1.0 Transitional//EN' 'http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd'><html xmlns='http://www.w3.org/1999/xhtml'><head><meta http-equiv='Content-Type' content='text/html; charset=utf-8' /><title>文件缺失</title><style type='text/css'>*{ padding: 0; margin: 0; }body{ background: #fff; font-family: '微软雅黑'; color: #333; font-size: 16px; }.system-message{ padding: 24px 48px; }.system-message h1{ font-size: 100px; font-weight: normal; line-height: 120px; margin-bottom: 12px; }.system-message .jump{ padding-top: 10px}.system-message .jump a{ color: #333;}.system-message .success,.system-message .error{ line-height: 1.8em; font-size: 36px }.system-message .detail{ font-size: 12px; line-height: 20px; margin-top: 12px; display:none}</style></head><body><div class='system-message'><h1>T _ T</h1><p class='error'>缺失错误信息描述文件</p><p class='detail'></p><p class='jump'>forfreej 在试图输出错误信息时, 无法在 webroot 中找到错误信息描述文件</p><p class='jump'>请在 webroot 目录下建立错误描述文件, 并以 error.html 命名</p><p class='jump'>这不是一个严重错误, 只会影响到您的调试, 不会影响到应用的正常运行与使用</p></div></body></html>");
-	}
-	
-	public void echo(String str) {
+	protected void echo(String str) {
 		
 		this.out.print(str);
 	}
 	
-	@SuppressWarnings("unchecked")
-	public void print_r(Object temp) {
+	protected void print_r(Object temp) {
 		
 		this.out.print(JSONArray.fromObject(temp));
 	}
 	
+	protected void print_r(Object temp, boolean flag) {
+		
+		this.out.print(JSONArray.fromObject(temp));
+		
+		if ( flag ) {
+			this.out.flush();
+			this.out.close();
+		}
+	}
+	
 	//url请求转发
-	public void forward() {
-		//获取ServletContext对象
-		RequestDispatcher rd = App.context.getRequestDispatcher("/index?p=test");//获取请求转发对象(RequestDispatcher)
+	protected void forward(String p, String c, String a) {
+		//获取ServletContext对象, 构建请求转发对象(RequestDispatcher)
+		RequestDispatcher rd = 
+			App.context.getRequestDispatcher("/index?p=" + p + "&c=" + c + "&a=" + a);
+		
 		try {
 			rd.forward(request, response);
 		} catch (ServletException e) {
@@ -142,4 +154,8 @@ public class ControllerBase {
 		}//调用forward方法实现请求转发
 	}
 	
+	protected String P(String file) {
+		
+		return this.info.get("path") + "/WEB-INF/classes/" + file + ".properties";
+	}
 }

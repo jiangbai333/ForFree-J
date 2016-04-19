@@ -42,7 +42,7 @@ public class DbBase implements Db {
 	
 	private Connection conn = null;
 	
-	public DbBase(Map<String, String> conf, String dbtype) {
+	public DbBase(Map<String, String> conf, String dbtype) throws ClassNotFoundException, SQLException {
 		
 		this.dbtype = dbtype;
 		this.host = conf.get("host");
@@ -54,7 +54,7 @@ public class DbBase implements Db {
 		this.connect();
 	}
 
-	public Boolean connect() {
+	public void connect() throws ClassNotFoundException, SQLException {
 		String	driver = null,
 				url = null,
 				username = null,
@@ -71,16 +71,8 @@ public class DbBase implements Db {
 		username = usernm;
 		password = passwd;
 		
-		try {
-			Class.forName(driver);
-			this.conn = DriverManager.getConnection(url, username, password);
-			return true;
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-		return false;
+		Class.forName(driver);
+		this.conn = DriverManager.getConnection(url, username, password);
 	}
 	
 	public DbBase field( List< String > field) {
