@@ -21,6 +21,7 @@ import com.App;
 import com.sys.common.RequestInfo;
 import com.sys.common.ResponseInfo;
 import com.sys.common.StaticMassage;
+import com.sys.core.model.ModelBase;
 import com.sys.libs.Template;
 import com.sys.tools.Str;
 
@@ -39,6 +40,8 @@ public class ControllerBase {
 	protected Map<String, String> _GET = new HashMap<String, String>();
 	
 	protected Map<String, String> _POST = new HashMap<String, String>();
+	
+	protected ModelBase model = null;
 	
 	public ControllerBase() {}
 	
@@ -183,5 +186,15 @@ public class ControllerBase {
 	protected String P(String file) {
 		
 		return this.info.get("path") + "/WEB-INF/classes/" + file + ".properties";
+	}
+	
+	protected ModelBase M(String modelName) {
+		
+		return model;
+	}
+	
+	protected ModelBase M() {
+		
+		return model;
 	}
 }

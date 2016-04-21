@@ -1,7 +1,9 @@
 package app.controller.auto;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.sys.core.controller.ControllerBase;
@@ -25,14 +27,26 @@ public class IndexController extends ControllerBase {
 		this.display();
 	}
 	
+	@SuppressWarnings("unchecked")
 	public void test() {
 //		T.N();
 		//this.forward();
 		Mysql m;
 		try {
 			m = new Mysql(new Proper(this.P("mysql")).getProperties());
-
-			this.print_r(m.table("test").field("*").select());
+			
+			Map temp = new HashMap<String, List<String>>();
+			List templis = new ArrayList<String>();
+			
+			for(int i = 1; i<=100;i++){
+				templis.add("text测试" + i);
+				
+			}
+			temp.put("text", templis);
+			
+			m.table("test").data(temp).add();
+			
+			//this.print_r(m.table("test").field("*").select());
 		} catch (ClassNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
