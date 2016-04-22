@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,6 +38,10 @@ public class ControllerBase {
 	
 	private HttpServletResponse response = null;
 	
+	private RequestInfo res = null;
+	
+	private ResponseInfo resq = null;
+	
 	protected Map<String, String> _GET = new HashMap<String, String>();
 	
 	protected Map<String, String> _POST = new HashMap<String, String>();
@@ -51,6 +56,8 @@ public class ControllerBase {
 		this.out = resq.getWriter();
 		this.response = resq.getResponse();
 		this.request = res.getRequest();
+		this.res = res;
+		this.resq = resq;
 		
 		this.info.put("url", request.getScheme() + 
 				"://" + request.getServerName() + 
@@ -183,7 +190,7 @@ public class ControllerBase {
 	 * @param 文件名
 	 * @return String 文件的绝对路径
 	 */
-	protected String P(String file) {
+	public String P(String file) {
 		
 		return this.info.get("path") + "/WEB-INF/classes/" + file + ".properties";
 	}
@@ -194,7 +201,26 @@ public class ControllerBase {
 	}
 	
 	protected ModelBase M() {
-		
-		return model;
+		try {
+			Class<?> ctrl = Class.forName("app.model." + this.res._GET("p") + "." + this.res._GET("c") + "." + Str.toUpper(this.res._GET("a"), 0) + "Model");
+
+			Constructor<?> cons[] = ctrl.getConstructors();
+			
+			return (ModelBase) cons[0].newInstance(this);
+			
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return null;
 	}
 }

@@ -122,17 +122,36 @@ public class DbBase implements Db {
 		return this;
 	}
 	
+	/**
+	 * 构建查询字符串
+	 * @return
+	 */
 	public List< Map<String, String> > select() {
 		this.sql = "select " + this.fieldStr + " from " + this.tableStr + " where " + this.whereStr;
 		return this.query();
 	}
 	
-	public void add(String sql) throws SQLException {
-		this.sql = sql;
-		this.executeUpdate(sql);
+	public int del() throws SQLException {
+		this.sql = "delete from " + this.tableStr + " where " + this.whereStr;
+		return this.executeUpdate(this.sql);
 	}
 	
-	public void add(Map<String, String> data) throws SQLException {
+	/**
+	 * 根据给定的sql语句进行插入
+	 * @param sql
+	 * @throws SQLException
+	 */
+	public int add(String sql) throws SQLException {
+		this.sql = sql;
+		return this.executeUpdate(sql);
+	}
+	
+	/**
+	 * 根据指定的数据进行插入
+	 * @param data
+	 * @throws SQLException
+	 */
+	public int add(Map<String, String> data) throws SQLException {
 		StringBuffer sql = new StringBuffer("insert into `" + this.tableStr + "` ");
 		String field = "";
 		String value = "";
@@ -146,14 +165,18 @@ public class DbBase implements Db {
 		}
 		
 		sql.append("(" + field.substring(0, field.length() - 1) + ") VALUES ");
-		sql.append("(" + value.substring(0, field.length() - 1) + ")");
+		sql.append("(" + value.substring(0, value.length() - 1) + ")");
 		
 		this.sql = sql.toString();
-		this.executeUpdate(this.sql);
+		return this.executeUpdate(this.sql);
 	}
 	
+	/**
+	 * 插入数据
+	 * @throws SQLException
+	 */
 	@SuppressWarnings("unchecked")
-	public void add() throws SQLException {
+	public int add() throws SQLException {
 
 		Map<String, List<String>> temp = this.data;
 		
@@ -193,17 +216,31 @@ public class DbBase implements Db {
 				
 		this.sql = sql.toString().substring(0, sql.length() - 1);
 
-		this.executeUpdate(this.sql);
+		return this.executeUpdate(this.sql);
 	}
 	
+	/**
+	 * 根据指定sql语句进行查询
+	 * @param sql
+	 * @return
+	 */
 	public List< Map<String, String> > query(String sql) {
 		return this.executeQuery(sql);
 	}
 	
+	/**
+	 * 查询
+	 * @return
+	 */
 	private List< Map<String, String> > query() {
 		return this.executeQuery(this.sql);
 	}
 	
+	/**
+	 * 执行查询
+	 * @param sql
+	 * @return List< Map<String, String> > 结果集列表
+	 */
 	private List< Map<String, String> > executeQuery(String sql) {
 		List< Map<String, String> > tempList = new ArrayList< Map<String, String> >();
 		
@@ -228,28 +265,29 @@ public class DbBase implements Db {
 		return tempList;
 	}
 	
-	private void executeUpdate(String sql) throws SQLException {
+	/**
+	 * 执行更改
+	 * @param sql
+	 * @throws SQLException
+	 */
+	private int executeUpdate(String sql) throws SQLException {
 		
 	    PreparedStatement pstmt = null;
-	    try {
 	    	
-	    	pstmt = this.conn.prepareStatement(sql);
-	        this.row = pstmt.executeUpdate();
-	        this.conn.commit();
-	    } catch (SQLException e) {
-	    	
-			this.conn.rollback();
-	        e.printStackTrace();
-	    } finally{
-	    	
-	    	if(pstmt != null) {
-				pstmt.close();
-	    	}
-	    }
-//        pstmt.close();
-//        conn.close();
+		pstmt = this.conn.prepareStatement(sql);
+		this.row = pstmt.executeUpdate();
+	    
+    	if(pstmt != null) {
+    		pstmt.close();
+    	}
+    	
+    	return this.row;
 	}
 
+	/**
+	 * 获取行数
+	 * @return int 行数
+	 */
 	private int GetRows() {
 		
 		int result = 0;
@@ -265,6 +303,10 @@ public class DbBase implements Db {
 		return result;
 	}
 	
+	/**
+	 * 获取列数
+	 * @return 列数
+	 */
 	private int GetCols() {
 		int col = 0;
 		try {
@@ -276,6 +318,29 @@ public class DbBase implements Db {
 		return col;
 	}
 
+	/**
+	 * 事物提交
+	 * @throws SQLException
+	 */
+	public void commit() throws SQLException {
+		this.conn.commit();
+	}
+	
+	/**
+	 * 事物回滚
+	 * @throws SQLException
+	 */
+	public void rollback() throws SQLException {
+		this.conn.rollback();
+	}
+	
+	/**
+	 * 主动释放数据库连接
+	 * @throws SQLException
+	 */
+	public void release() throws SQLException{
+		this.conn.close();
+	}
 	
 	protected void finalize() throws java.lang.Throwable {
 		

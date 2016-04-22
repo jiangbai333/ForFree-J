@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import app.model.auto.index.Test1Model;
+
 import com.sys.core.controller.ControllerBase;
 import com.sys.libs.Proper;
 import com.sys.libs.db.Mysql;
@@ -38,13 +40,19 @@ public class IndexController extends ControllerBase {
 			Map temp = new HashMap<String, List<String>>();
 			List templis = new ArrayList<String>();
 			
-			for(int i = 1; i<=100;i++){
+			/*for(int i = 1; i<=100000;i++){
 				templis.add("text测试" + i);
 				
 			}
 			temp.put("text", templis);
 			
-			m.table("test").data(temp).add();
+			m.table("test").data(temp).add();*/
+			
+			m.table("test").where("id>28").del();
+			
+			m.commit();
+			
+			System.out.println(m.row);
 			
 			//this.print_r(m.table("test").field("*").select());
 		} catch (ClassNotFoundException e) {
@@ -54,5 +62,10 @@ public class IndexController extends ControllerBase {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}		
+	}	
+	
+	public void test1() {
+		Test1Model a = (Test1Model) this.M();
+		this.print_r(a.test());
+	}
 }
