@@ -6,6 +6,8 @@ import java.lang.reflect.InvocationTargetException;
 import com.sys.common.RequestInfo;
 import com.sys.common.ResponseInfo;
 import com.sys.core.controller.ControllerBase;
+import com.sys.tools.F;
+import com.sys.tools.Reflection;
 import com.sys.tools.Str;
 
 public final class Router {
@@ -29,11 +31,21 @@ public final class Router {
 	public void run(RequestInfo res, ResponseInfo resp) {
 		
 		this.init(res, resp);		
-		
+//		new Reflection<F>("com.sys.tools.F").todo("test", new Class[] {int.class}, new Object[]{100});
 		try {
-			Class<?> ctrl = Class.forName("app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller"); //获取控制器
 			
-			ctrl.getMethod("init", RequestInfo.class, ResponseInfo.class, String.class).invoke(ctrl.newInstance(), res, resp, this.action);
+			String cls = "app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller";
+			
+			new Reflection<ControllerBase>(cls).todo("init", new Class[] {
+				RequestInfo.class, ResponseInfo.class, String.class
+			}, new Object[] {
+				res, resp, this.action
+			});
+			
+			
+//			Class<?> ctrl = Class.forName("app.controller." + this.pack + "." + Str.toUpper(this.controller, 0) + "Controller"); //获取控制器
+//			
+//			ctrl.getMethod("init", RequestInfo.class, ResponseInfo.class, String.class).invoke(ctrl.newInstance(), res, resp, this.action);
 			
 		} catch (NoSuchMethodException e) {
 			//当核心控制器缺少 init 方法时，将抛出这个错误。但这是正常开发不可能遇到的，不用理会。
