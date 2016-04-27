@@ -46,12 +46,14 @@ public class ControllerBase {
 	
 	protected Map<String, String> _POST = new HashMap<String, String>();
 	
+	protected Map<String, String> _ROUTER = new HashMap<String, String>();
+	
 	protected ModelBase model = null;
 	
 	public ControllerBase() {}
 	
 	@SuppressWarnings({ "unchecked", "deprecation" })
-	public void init(RequestInfo res, ResponseInfo resq, String todo){
+	public ControllerBase init(RequestInfo res, ResponseInfo resq, String todo){
 
 		this.out = resq.getWriter();
 		this.response = resq.getResponse();
@@ -71,6 +73,7 @@ public class ControllerBase {
 				
 		this._GET = res.getGet();
 		this._POST = res.getPost();
+		this._ROUTER = res.getRouter();
 		
 		if ( !Str.is_invalid(todo) ) {
 			try {
@@ -88,6 +91,8 @@ public class ControllerBase {
 				});
 			}
 		}
+		
+		return this;
 	}
 	
 	public void error(String type, String[] msg) {
@@ -107,14 +112,10 @@ public class ControllerBase {
 			
 			sendOut = sendOut.replaceAll("\\{\\$msg\\}", "");
 			sendOut = sendOut.replaceAll("\\{\\$errorType\\}", (String) StaticMassage.errorType.get(type));
-			this.out.print(sendOut);
-			this.out.flush();
-			this.out.close();
 			
+			this.echo(sendOut, true);			
 		} catch (IOException e) {
-			this.out.print((String)StaticMassage.errorType.get("missingErrorViewFile"));
-			this.out.flush();
-			this.out.close();
+			this.echo((String)StaticMassage.errorType.get("missingErrorViewFile"), true);
 		}
 	}	
 	
@@ -123,11 +124,9 @@ public class ControllerBase {
 	 */
 	protected void display(){
 		
-		String file = this.info.get("path") + "/" + this._GET.get("p") + "/" + this._GET.get("a") + ".html";
+		String file = this.info.get("path") + "/" + this._ROUTER.get("p") + "/" + this._ROUTER.get("a") + ".html";
 
-		this.out.print(new Template().compile(file, this));
-		this.out.flush();
-		this.out.close();
+		this.echo(new Template().compile(file, this), true);
 	}
 	
 	/**
@@ -137,6 +136,21 @@ public class ControllerBase {
 	protected void echo(String str) {
 		
 		this.out.print(str);
+	}
+	
+	/**
+	 * 打印一个特定的字符串并根据需要终止输出流, 目前只为了调试程序使用
+	 * @param str 将要打印的字符串
+	 * @param flag 是否终止输出流 true为终止输出流
+	 */
+	protected void echo(String str,  boolean flag) {
+		
+		this.echo(str);
+		
+		if ( flag ) {
+			this.out.flush();
+			this.out.close();
+		}
 	}
 	
 	/**
@@ -155,7 +169,7 @@ public class ControllerBase {
 	 */
 	protected void print_r(Object temp, boolean flag) {
 		
-		this.out.print(JSONArray.fromObject(temp));
+		this.print_r(temp);
 		
 		if ( flag ) {
 			this.out.flush();
@@ -202,7 +216,7 @@ public class ControllerBase {
 	
 	protected ModelBase M() {
 		try {
-			Class<?> ctrl = Class.forName("app.model." + this.res._GET("p") + "." + this.res._GET("c") + "." + Str.toUpper(this.res._GET("a"), 0) + "Model");
+			Class<?> ctrl = Class.forName("app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model");
 
 			Constructor<?> cons[] = ctrl.getConstructors();
 			

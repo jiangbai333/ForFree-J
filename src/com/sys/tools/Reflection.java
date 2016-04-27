@@ -11,6 +11,7 @@ public class Reflection<T> {
 	
 	private Class<T> primal = null;
 	
+	public Reflection () {}
 	
 	/**
 	 * 根据构造方法返回类的实例
@@ -122,8 +123,14 @@ public class Reflection<T> {
 	
 	
 	
+	public Object todo(T cls, String todo) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+		return cls.getClass().getMethod(todo).invoke(cls);
+	}
 	
-	public static void main(String[] args) throws SecurityException, InvocationTargetException, NoSuchMethodException {
+	
+	
+	
+	/*public static void main(String[] args) throws SecurityException, InvocationTargetException, NoSuchMethodException {
 			
 		try {
 			new Reflection<F>("com.sys.tools.F").todo("test");
@@ -148,5 +155,5 @@ public class Reflection<T> {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	}
+	}*/
 }

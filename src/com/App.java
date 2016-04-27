@@ -36,11 +36,12 @@ public final class App extends HttpServlet {
 	    throws ServletException, IOException {
 		/** 设置字符集编码 */
 		response.setContentType("text/html; charset=UTF-8");
-
+		
+		/** 获取getServletContext */
 		App.context = this.getServletContext();
 		
 		/** 解析请求 */
-		( new Router() ).run(new RequestInfo(request), new ResponseInfo(response));
+		new Router(new RequestInfo(request), new ResponseInfo(response));
 			
 	}
 }
