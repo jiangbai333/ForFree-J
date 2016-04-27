@@ -18,6 +18,9 @@ public class RequestInfo {
 	/** 请求体中通过 GET 方式传递的参数 */
 	private Map<String, String> get = new HashMap<String, String>();
 	
+	/** 请求体中通过 GET 方式传递的路由参数 */
+	private Map<String, String> router = new HashMap<String, String>();
+	
 	@SuppressWarnings("unchecked")
 	public RequestInfo(HttpServletRequest request) {
 		
@@ -44,8 +47,12 @@ public class RequestInfo {
 				
 				String key = temp[i].split("=")[0];
 				String value = temp[i].split("=")[1];
-
-				this.get.put(key, value);
+				
+				if ( key.equals("a") || key.equals("c") || key.equals("p") ) {
+					this.router.put(key, value);
+				} else {
+					this.get.put(key, value);
+				}
 			}
 		}
 		
@@ -80,12 +87,28 @@ public class RequestInfo {
 
 	public Map<String, String> getPost() {
 		
-		return post;
+		return this.post;
 	}
 
 	public Map<String, String> getGet() {
 		
-		return get;
+		return this.get;
+	}
+	
+	public Map<String, String> getRouter() {
+		
+		return this.router;
+	}
+
+	public String _POST(String key) {
+		
+		if ( this.post.containsKey(key) ) {
+			
+			return this.post.get(key);
+		} else {
+			
+			return null;
+		}
 	}
 
 	public String _GET(String key) {
@@ -99,8 +122,19 @@ public class RequestInfo {
 		}
 	}
 
+	public String _ROUTER(String key) {
+		
+		if ( this.router.containsKey(key) ) {
+			
+			return this.router.get(key);
+		} else {
+			
+			return null;
+		}
+	}
+
 	/**
-	 * 可以选择性的添加c、a、v, 为了防止get属性中, 缺少c、a、v, 或实现更复杂的控制器映射
+	 * 可以选择性的添加c、a、v, 为了防止 router 属性中, 缺少c、a、v, 或实现更复杂的控制器映射
 	 * @param String key c|a|v
 	 * @param String value 
 	 * @return
@@ -109,19 +143,8 @@ public class RequestInfo {
 		
 		if ( key.equals("c") || key.equals("a") || key.equals("p") ) {
 			
-			this.get.put(key, value);
+			this.router.put(key, value);
 			return value;
-		} else {
-			
-			return null;
-		}
-	}
-
-	public String _POST(String key) {
-		
-		if ( this.post.containsKey(key) ) {
-			
-			return this.post.get(key);
 		} else {
 			
 			return null;
