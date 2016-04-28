@@ -198,9 +198,9 @@ public class DbBase implements Db {
 				}  
 			} else {
 				while (iteratorList.hasNext()) {
-					String str = value.get(i);  
+					String str = value.get(i);
 					value.set(i++, str + "'" + iteratorList.next() + "',");
-				}  
+				}
 			} 
 		}
 		

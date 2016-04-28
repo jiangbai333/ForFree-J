@@ -24,6 +24,7 @@ import com.sys.common.ResponseInfo;
 import com.sys.common.StaticMassage;
 import com.sys.core.model.ModelBase;
 import com.sys.libs.Template;
+import com.sys.tools.Reflection;
 import com.sys.tools.Str;
 
 @SuppressWarnings("serial")
@@ -86,8 +87,8 @@ public class ControllerBase {
 				e.printStackTrace();
 			} catch (NoSuchMethodException e) {
 				this.error("MissingActoin", new String[] {
-					"请在 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller 中查看 " + _GET.get("a") + "()" + " 方法名是否书写正确",
-					"请查看 app.controller." + _GET.get("p") + "." + _GET.get("c") + "Controller." + _GET.get("a") + "() 方法是否存在"
+					"请在 app.controller." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "Controller 中查看 " + this._ROUTER.get("a") + "()" + " 方法名是否书写正确",
+					"请查看 app.controller." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "Controller." + this._ROUTER.get("a") + "() 方法是否存在"
 				});
 			}
 		}
@@ -215,11 +216,44 @@ public class ControllerBase {
 	}
 	
 	protected ModelBase M() {
-		try {
-			Class<?> ctrl = Class.forName("app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model");
 
-			Constructor<?> cons[] = ctrl.getConstructors();
+		
+
+//		String cls = "app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model";
+//		
+//		
+//		try {
+//			return new Reflection<ModelBase>(cls, new Object[]{ this }).getCls();
+//		} catch (IllegalArgumentException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (SecurityException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InstantiationException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (IllegalAccessException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (InvocationTargetException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (NoSuchMethodException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ClassNotFoundException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+		
+		
+		try {
 			
+			Class<?> ctrl = Class.forName("app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model");
+			Constructor<?> cons[] = ctrl.getConstructors();
+
+			System.out.println(cons[0]);
 			return (ModelBase) cons[0].newInstance(this);
 			
 		} catch (ClassNotFoundException e) {

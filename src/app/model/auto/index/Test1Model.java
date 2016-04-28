@@ -1,8 +1,6 @@
 package app.model.auto.index;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,7 +22,7 @@ public class Test1Model extends ModelBase {
 		try {
 			m = new Mysql(new Proper(cb.P("mysql")).getProperties());
 			
-			return m.table("test").field("*").where("id>100000 AND id<100900").select();
+			return m.table("test").field("*").where("id>0 AND id<900").select();
 			
 			//this.print_r(m.table("test").field("*").select());
 		} catch (ClassNotFoundException e) {
