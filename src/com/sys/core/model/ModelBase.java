@@ -9,5 +9,4 @@ public class ModelBase {
 	public ModelBase(ControllerBase cb) {
 		this.cb = cb;
 	}
-	
 }

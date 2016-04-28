@@ -40,15 +40,15 @@ public class IndexController extends ControllerBase {
 			Map temp = new HashMap<String, List<String>>();
 			List templis = new ArrayList<String>();
 			
-			/*for(int i = 1; i<=100000;i++){
+			for(int i = 1; i<=100000;i++){
 				templis.add("text测试" + i);
 				
 			}
 			temp.put("text", templis);
 			
-			m.table("test").data(temp).add();*/
+			m.table("test").data(temp).add();
 			
-			m.table("test").where("id>28").del();
+			//m.table("test").where("id>28").del();
 			
 			m.commit();
 			

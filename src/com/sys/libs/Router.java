@@ -36,11 +36,10 @@ public final class Router {
 /**将要进一步优化的部分，更高效的实例化控制器*/
 //			new Reflection<ControllerBase>().todo(this.cb, this.res._ROUTER("a"));
 			
-			String cls = "app.controller." + res._ROUTER("p") + "." + Str.toUpper(res._ROUTER("c"), 0) + "Controller";
+			String cls = "app.controller." + res._ROUTER("p") + "." 
+				+ Str.toUpper(res._ROUTER("c"), 0) + "Controller";
 			
-			new Reflection<ControllerBase>(cls).todo("init", new Class[] {
-				RequestInfo.class, ResponseInfo.class, String.class
-			}, new Object[] {
+			new Reflection<ControllerBase>(cls).todo("init", new Object[] {
 				this.res, this.resp, this.res._ROUTER("a")
 			});
 		} catch (NoSuchMethodException e) {
