@@ -6,7 +6,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
@@ -39,8 +38,10 @@ public class ControllerBase {
 	
 	private HttpServletResponse response = null;
 	
+	@SuppressWarnings("unused")
 	private RequestInfo res = null;
 	
+	@SuppressWarnings("unused")
 	private ResponseInfo resq = null;
 	
 	protected Map<String, String> _GET = new HashMap<String, String>();
@@ -216,49 +217,11 @@ public class ControllerBase {
 	}
 	
 	protected ModelBase M() {
-
 		
-
-//		String cls = "app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model";
-//		
-//		
-//		try {
-//			return new Reflection<ModelBase>(cls, new Object[]{ this }).getCls();
-//		} catch (IllegalArgumentException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (SecurityException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InstantiationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (IllegalAccessException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (InvocationTargetException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (NoSuchMethodException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (ClassNotFoundException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		
+		String cls = "app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model";
 		
 		try {
-			
-			Class<?> ctrl = Class.forName("app.model." + this._ROUTER.get("p") + "." + this._ROUTER.get("c") + "." + Str.toUpper(this._ROUTER.get("a"), 0) + "Model");
-			Constructor<?> cons[] = ctrl.getConstructors();
-
-			System.out.println(cons[0]);
-			return (ModelBase) cons[0].newInstance(this);
-			
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return new Reflection<ModelBase>(cls, new Class[]{ControllerBase.class}, new Object[]{ this }).getCls();
 		} catch (InstantiationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -268,7 +231,13 @@ public class ControllerBase {
 		} catch (InvocationTargetException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
 		return null;
 	}
 }
