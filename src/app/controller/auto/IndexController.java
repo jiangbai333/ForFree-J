@@ -1,10 +1,16 @@
 package app.controller.auto;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import redis.clients.jedis.Jedis;
 
 import app.model.auto.index.Test1Model;
 
@@ -28,6 +34,45 @@ public class IndexController extends ControllerBase {
 		 
 		this.display();
 	}
+	
+	public void redis() {
+		      //连接本地的 Redis 服务
+	      Jedis jedis = new Jedis("192.168.9.120");
+	      System.out.println("Connection to server sucessfully");
+	      //查看服务是否运行
+	     System.out.println(jedis.get("a"));
+	 
+	}
+	
+	public void up() {
+		
+		Mysql m;
+		try {
+			m = new Mysql(new Proper(this.P("mysql")).getProperties());
+			
+			Map<String, String> temp = new HashMap<String, String>(){{
+				put("text", "asdf");
+				put("test", "aaa啊啊啊");
+				put("test1", "bbb啊啊啊");
+				put("test2", "asd啊啊啊");
+			}};
+			
+			m.table("test").where("id>28").update(temp);
+			
+			m.commit();
+			
+			System.out.println(m.row);
+			
+			//this.print_r(m.table("test").field("*").select());
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
 	
 	@SuppressWarnings("unchecked")
 	public void test() {
@@ -67,5 +112,31 @@ public class IndexController extends ControllerBase {
 	public void test1() {
 		Test1Model a = (Test1Model) this.M();
 		this.print_r(a.test());
+	}
+	
+	public void test2() {
+		Socket server = null;
+		   
+		try {
+			
+			server = new Socket("192.168.9.120", 34952);
+				
+			BufferedReader in = new BufferedReader(new InputStreamReader(server.getInputStream()));
+				
+			PrintWriter out = new PrintWriter(server.getOutputStream());
+
+		   System.out.println(in.readLine());
+		    
+		    this.echo(str, true);
+//		    if (str.equals("end")) {
+//		     break;
+//		    }
+		   
+		   server.close();
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 }

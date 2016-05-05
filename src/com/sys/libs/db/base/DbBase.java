@@ -115,7 +115,8 @@ public class DbBase implements Db {
 		return this;
 	}
 
-	public DbBase data(Map<String, List<String>> data) {
+	@SuppressWarnings("unchecked")
+	public DbBase data(Map data) {
 		
 		this.data = data;
 		
@@ -127,12 +128,30 @@ public class DbBase implements Db {
 	 * @return
 	 */
 	public List< Map<String, String> > select() {
-		this.sql = "select " + this.fieldStr + " from " + this.tableStr + " where " + this.whereStr;
-		return this.query();
+		this.sql = "select " + this.fieldStr + " from `" + this.tableStr + "` where " + this.whereStr;
+		return this.query(this.sql);
 	}
 	
 	public int del() throws SQLException {
-		this.sql = "delete from " + this.tableStr + " where " + this.whereStr;
+		this.sql = "delete from `" + this.tableStr + "` where " + this.whereStr;
+		return this.executeUpdate(this.sql);
+	}
+	
+	public int update(Map<String, String> data) throws SQLException {
+		
+		StringBuffer sql = new StringBuffer("update `" + this.tableStr + "` set ");
+		String tempSql = "";
+		
+		Iterator<Entry<String, String>> iteratorMap = data.entrySet().iterator();  
+		while (iteratorMap.hasNext()) {  
+						
+			Entry<String, String> entry = iteratorMap.next();  
+			sql.append("`" + entry.getKey() + "` = '" + entry.getValue() + "',");
+		}
+		
+		tempSql = sql.toString().substring(0, sql.toString().length() - 1);
+		
+		this.sql = tempSql + " where " + this.whereStr;
 		return this.executeUpdate(this.sql);
 	}
 	
@@ -229,14 +248,6 @@ public class DbBase implements Db {
 	}
 	
 	/**
-	 * 查询
-	 * @return
-	 */
-	private List< Map<String, String> > query() {
-		return this.executeQuery(this.sql);
-	}
-	
-	/**
 	 * 执行查询
 	 * @param sql
 	 * @return List< Map<String, String> > 结果集列表
@@ -249,8 +260,8 @@ public class DbBase implements Db {
 	    	pstmt = this.conn.prepareStatement(sql);
 	        
 	        this.rs = pstmt.executeQuery();
-	        this.row = this.GetRows();
-	        this.col = this.GetCols();
+	        this.row = this.getRows();
+	        this.col = this.getCols();
 	        
 	        while (rs.next()) {
         		Map<String, String> tempMap = new HashMap<String, String>();
@@ -288,7 +299,7 @@ public class DbBase implements Db {
 	 * 获取行数
 	 * @return int 行数
 	 */
-	private int GetRows() {
+	public int setRows() {
 		
 		int result = 0;
 	    try {
@@ -303,11 +314,16 @@ public class DbBase implements Db {
 		return result;
 	}
 	
+	public int getRows() {
+		
+		return this.row;
+	}
+	
 	/**
 	 * 获取列数
 	 * @return 列数
 	 */
-	private int GetCols() {
+	public int getCols() {
 		int col = 0;
 		try {
 			col = rs.getMetaData().getColumnCount();

@@ -43,7 +43,7 @@ public class Reflection<T> {
 	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public Reflection (String cls, Class[] ctor, Object[] obj) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException{
+	public Reflection (String cls, Class[] ctor, Object[] obj) throws InstantiationException, IllegalAccessException, InvocationTargetException,  NoSuchMethodException, ClassNotFoundException {
 		
 		Class<T> c = (Class<T>) Class.forName(cls);
 		Constructor cons = c.getConstructor(ctor);
@@ -78,7 +78,7 @@ public class Reflection<T> {
 	 * @throws ClassNotFoundException
 	 */
 	@SuppressWarnings("unchecked")
-	public Reflection (String cls, Object[] obj) throws IllegalArgumentException, InstantiationException, IllegalAccessException, InvocationTargetException, SecurityException, NoSuchMethodException, ClassNotFoundException{
+	public Reflection (String cls, Object[] obj) throws InstantiationException, IllegalAccessException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException {
 		
 		Class[] ctor = new Class[obj.length];
 		for (int i = 0; i < obj.length; i++) {
@@ -100,7 +100,7 @@ public class Reflection<T> {
 	 * @throws IllegalAccessException
 	 */
 	@SuppressWarnings("unchecked")
-	public Reflection (String cls) throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+	public Reflection (String cls) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
 		
 		Class<T> c = (Class<T>) Class.forName(cls);
 		
@@ -129,13 +129,13 @@ public class Reflection<T> {
 	 * @throws InvocationTargetException
 	 */
 	@SuppressWarnings("unchecked")
-	public Object todo(String md, Class[] param, Object[] obj) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public Object todo(String md, Class[] param, Object[] obj) throws  NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		
 		return this.primal.getMethod(md, param).invoke(this.cls, obj);
 	}
 
 	@SuppressWarnings("unchecked")
-	public Object todo(String md, Object[] obj) throws SecurityException, NoSuchMethodException, IllegalArgumentException, IllegalAccessException, InvocationTargetException {
+	public Object todo(String md, Object[] obj) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
 		
 		Class[] param = new Class[obj.length];
 		for (int i = 0; i < obj.length; i++) {
@@ -164,12 +164,12 @@ public class Reflection<T> {
 	 * @throws NoSuchMethodException
 	 */
 	@SuppressWarnings("unchecked")
-	public Object todo(String todo) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	public Object todo(String todo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		
 		return this.primal.getMethod(todo).invoke(this.cls);
 	}
 	
-	public Object todo(T cls, String todo) throws IllegalArgumentException, SecurityException, IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+	public Object todo(T cls, String todo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 		return cls.getClass().getMethod(todo).invoke(cls);
 	}
 	
