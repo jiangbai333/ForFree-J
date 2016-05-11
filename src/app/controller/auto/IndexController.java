@@ -34,7 +34,11 @@ public class IndexController extends ControllerBase {
 		 
 		this.display();
 	}
-	
+	public void amaze() {
+//		T.N();
+		 
+		this.display();
+	}
 	public void redis() {
 		      //连接本地的 Redis 服务
 	      Jedis jedis = new Jedis("192.168.9.120");
@@ -52,16 +56,16 @@ public class IndexController extends ControllerBase {
 			
 			Map<String, String> temp = new HashMap<String, String>(){{
 				put("text", "asdf");
-				put("test", "aaa啊啊啊");
-				put("test1", "bbb啊啊啊");
-				put("test2", "asd啊啊啊");
+				put("test", "a123123");
+				put("test1", "b3213123啊啊");
+				put("test2", "a1231231啊啊");
 			}};
 			
-			m.table("test").where("id>28").update(temp);
+			m.table("test").data(temp).where("id>28").update();
 			
 			m.commit();
 			
-			System.out.println(m.row);
+			System.out.println(m.getRows());
 			
 			//this.print_r(m.table("test").field("*").select());
 		} catch (ClassNotFoundException e) {
@@ -97,7 +101,7 @@ public class IndexController extends ControllerBase {
 			
 			m.commit();
 			
-			System.out.println(m.row);
+			System.out.println(m.getRows());
 			
 			//this.print_r(m.table("test").field("*").select());
 		} catch (ClassNotFoundException e) {

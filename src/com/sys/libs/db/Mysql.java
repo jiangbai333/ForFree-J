@@ -14,10 +14,10 @@ public class Mysql extends DbBase {
 	}
 	
 	protected void connect() throws ClassNotFoundException, SQLException {
-		String	username = usernm,
-				password = passwd,
+		String	username = this.getConf("usernm"),
+				password = this.getConf("passwd"),
 				driver = "com.mysql.jdbc.Driver",
-				url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.dbname + "?characterEncoding=UTF-8";
+				url = "jdbc:mysql://" + this.getConf("host") + ":" + this.getConf("port") + "/" + this.getConf("dbname") + "?characterEncoding=UTF-8";
 		
 		Class.forName(driver);
 		this.conn = DriverManager.getConnection(url, username, password);
